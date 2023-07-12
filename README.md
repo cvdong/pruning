@@ -2,18 +2,26 @@
 
 ## 模型剪枝 ™️
 
-模型剪枝是通过消除神经网络中某些不必要的连接或神经元来减小模型的大小。其基本思想是，通过删除网络中一些冗余的参数来降低网络的复杂度，从而达到减小计算量和存储空间的目的。模型剪枝通常可以分为以下两种类型：
+1. Torch-Pruning
+![](./images/intro.png)
 
-1. 非结构化剪枝（Unstructured Pruning）：非结构化剪枝是指在模型中直接删除一些参数，例如删除一些权重系数。这种方法通常不考虑神经元和层级别的结构，因此可以达到更高的压缩比，但同时也会对网络的密度造成影响；
-2. 结构化剪枝（Structured Pruning）：结构化剪枝是指在模型中删除一些结构，例如神经元、层、卷积核等。结构化剪枝通常可以按照预定义的结构进行剪枝，例如每一层中固定数量的神经元或固定数量的卷积核。这种方法的优点是可以保留网络的结构，因此很容易应用到硬件上进行加速。
+paper: [DepGraph: Towards Any Structural Pruning](https://arxiv.org/abs/2301.12900)
+github: [https://github.com/VainF/Torch-Pruning](https://github.com/VainF/Torch-Pruning)
 
-模型剪枝的主要优点包括：
+关于模型剪枝这边推荐一种**通用的结构化剪枝工具**[Torch-Pruning](https://github.com/VainF/Torch-Pruning),不同于torch.nn.utils.prune中利用掩码(Masking)实现的“模拟剪枝”, Torch-Pruning采用了一种名为DepGraph的非深度图算法, 能够“物理”地移除模型中的耦合参数和通道。
 
-1. 减小模型的大小，节省存储空间和计算资源；
-2. 提高模型的速度和效率，使得模型能够在更小的设备上运行得更快、更稳定；
-3. 改善模型的泛化性能，防止过拟合。
+(1) install 
+```
+pip install torch-pruning
+```
 
-模型剪枝的主要缺点包括：
+(2) yolov8_prune
+```
+git clone https://github.com/ultralytics/ultralytics.git 
+cp yolov8_pruning.py ultralytics/
+cd ultralytics 
+git checkout 44c7c3514d87a5e05cfb14dba5a3eeb6eb860e70 # for compatibility
+python yolov8_pruning.py
 
-1. 剪枝可能会对模型的性能产生负面影响，使得模型的准确率下降；
-2. 剪枝需要耗费大量的计算资源和时间，以确定最优的剪枝方案。
+```
+注意： 模型训练 ultralytics 版本 一定和剪枝版本对应，目前测试版本 ultralytics==8.0.90.
