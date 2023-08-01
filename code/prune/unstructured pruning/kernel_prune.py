@@ -50,6 +50,10 @@ prune_rate = 2/3 # 要去掉这么多
 num_prune = int(weight.shape[0] * prune_rate)
 
 # 计算每个filter的L2范数
+# 范数(Norm)是向量空间的一种函数，其用来衡量向量的大小。
+# 在数学上，范数是一种将向量映射到非负实数的函数，范数有很多种，
+# 例如L1数、L2范数等。其中L2范数又称为欧几里得范数，它是指向量各元素的平方和的平方根，
+
 norm_per_filter = np.sqrt(np.sum(weight ** 2, axis=(1, 2, 3)))
 print()
 print(f"每个卷积核的L2范数: {norm_per_filter}")
