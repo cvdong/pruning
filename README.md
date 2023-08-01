@@ -2,7 +2,7 @@
 
 ## 模型剪枝 ™️
 
-1. Torch-Pruning
+#### 1. Torch-Pruning
 ![](./images/intro.png)
 
 * paper: [DepGraph: Towards Any Structural Pruning](https://arxiv.org/abs/2301.12900)
@@ -24,3 +24,6 @@ git checkout 44c7c3514d87a5e05cfb14dba5a3eeb6eb860e70 # for compatibility
 python yolov8_pruning.py
 ```
 注意： 模型训练 ultralytics 版本一定和剪枝版本对应，目前测试版本 ultralytics==8.0.90.
+
+
+#### 2. Channel prune
