@@ -20,7 +20,7 @@ class BigModel(nn.Module):
 
 # 准备MNIST数据集
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
+train_dataset = datasets.MNIST('C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/data', train=True, download=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 
 def train(model, dataloader, criterion, optimizer, device='cuda', num_epochs=10):
@@ -53,7 +53,7 @@ optimizer = optim.Adam(big_model.parameters(), lr=1e-3)
 big_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=2)
 
 # 保存训练好的大网络
-torch.save(big_model.state_dict(), "big_model.pth")
+torch.save(big_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth")
 
 # 2. 修剪大网络为小网络  <==================================
 def prune_network(model, pruning_rate=0.5, method="global"):
@@ -68,11 +68,11 @@ def prune_network(model, pruning_rate=0.5, method="global"):
             param.data = torch.FloatTensor(tensor * mask.astype(float)).to(param.device)
 
 
-big_model.load_state_dict(torch.load("big_model.pth"))
+big_model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth"))
 prune_network(big_model, pruning_rate=0.5, method="global") # <==================================
 
 # 保存修剪后的模型
-torch.save(big_model.state_dict(), "pruned_model.pth")
+torch.save(big_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/pruned_model.pth")
 
 # 3. 以低的学习率做微调
 criterion = nn.CrossEntropyLoss()
@@ -80,7 +80,7 @@ optimizer = optim.Adam(big_model.parameters(), lr=1e-4) # <=====================
 finetuned_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=10)
 
 # 保存微调后的模型
-torch.save(finetuned_model.state_dict(), "finetuned_pruned_model.pth")
+torch.save(finetuned_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/finetuned_pruned_model.pth")
 
 
 # Epoch 1, Loss: 0.2022465198550985
