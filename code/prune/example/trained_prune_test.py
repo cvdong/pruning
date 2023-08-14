@@ -23,7 +23,7 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1
 test_dataset = datasets.MNIST('C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/data', train=False, download=True, transform=transform)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=True)
 model = BigModel()
-model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth"))
+model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/finetuned_pruned_model.pth"))
 
 # 3. 测试模型并计算准确率
 model.eval()
@@ -51,3 +51,7 @@ with torch.no_grad():
 
 accuracy = 100 * correct / total
 print(f"Accuracy: {accuracy:.2f}%")
+
+# 模型参数量
+from torchsummary import summary
+summary(model.to("cuda"), input_size=(512, 784), device="cuda")
