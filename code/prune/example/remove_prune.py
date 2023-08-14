@@ -67,16 +67,16 @@ if __name__ == "__main__":
     big_model = BigModel()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(big_model.parameters(), lr=1e-3)
-    big_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=3)
+    big_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=10)
 
     # Save the trained big network
-    torch.save(big_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth")
+    torch.save(big_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_big_model.pth")
     
     # Set the input shape of the model
     dummy_input = torch.randn(1, 1, 28, 28).to("cuda")
 
     # Export the model to ONNX format
-    torch.onnx.export(big_model, dummy_input, "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.onnx")
+    torch.onnx.export(big_model, dummy_input, "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_big_model.onnx")
 
 # Epoch 1, Loss: 0.1406550307707019
 # Epoch 2, Loss: 0.05205000414493691

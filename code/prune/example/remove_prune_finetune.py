@@ -6,7 +6,7 @@ from torchvision import datasets, transforms
 
 # 1.load a model and inspect it
 model = BigModel()
-model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth"))
+model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_big_model.pth"))
 
 # # code snippest for inspecting the structure
 # for name, module in model.named_modules():
@@ -53,27 +53,27 @@ for name, module in model.named_modules():
     pass
 
 # Save the pruned model state_dict
-torch.save(model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/pruned_model.pth")
+torch.save(model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_pruned_model.pth")
 
 # dummy input
 dummy_input = torch.randn(1, 1, 28, 28)
 
 # export to onnx
-torch.onnx.export(model, dummy_input, "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/pruned_model.onnx")
+torch.onnx.export(model, dummy_input, "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_pruned_model.onnx")
 
 #################################### FINE TUNE ######################################
 # Prepare the MNIST dataset
-model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/pruned_model.pth"))
+model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_pruned_model.pth"))
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 train_dataset = datasets.MNIST('C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/data', train=True, download=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
-big_model = train(model, train_loader, criterion, optimizer, device='cuda', num_epochs=3)
+big_model = train(model, train_loader, criterion, optimizer, device='cuda', num_epochs=10)
 
 # Save the trained big network
-torch.save(model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/pruned_model_after_finetune.pth")
+torch.save(model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_pruned_model_after_finetune.pth")
 
 #  BigModel(
 #   (conv1): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))

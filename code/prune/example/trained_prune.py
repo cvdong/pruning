@@ -23,7 +23,7 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1
 train_dataset = datasets.MNIST('C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/data', train=True, download=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 
-def train(model, dataloader, criterion, optimizer, device='cuda', num_epochs=10):
+def train(model, dataloader, criterion, optimizer, device='cuda', num_epochs=20):
     model.train()
     model.to(device)
 
@@ -50,7 +50,7 @@ def train(model, dataloader, criterion, optimizer, device='cuda', num_epochs=10)
 big_model = BigModel()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(big_model.parameters(), lr=1e-3)
-big_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=2)
+big_model = train(big_model, train_loader, criterion, optimizer, device='cuda', num_epochs=10)
 
 # 保存训练好的大网络
 torch.save(big_model.state_dict(), "C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth")

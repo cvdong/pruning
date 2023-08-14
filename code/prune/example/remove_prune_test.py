@@ -1,29 +1,19 @@
+# remove 
+# model 结构改变
+
 import torch
 import torch.nn as nn
 from torchvision import datasets, transforms
 import numpy as np
 import matplotlib.pyplot as plt
-
-# 1. 定义网络模型
-class BigModel(nn.Module):
-    def __init__(self):
-        super(BigModel, self).__init__()
-        self.fc1 = nn.Linear(784, 512)
-        self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, 10)
-
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
+from remove_prune import BigModel
 
 # 2. 加载模型和测试数据
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 test_dataset = datasets.MNIST('C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/data', train=False, download=True, transform=transform)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=True)
 model = BigModel()
-model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/big_model.pth"))
+model.load_state_dict(torch.load("C:/Users/cv_ya/Desktop/git/Pruning/code/prune/example/r_pruned_model_after_finetune.pth"))
 
 # 3. 测试模型并计算准确率
 model.eval()
@@ -33,7 +23,7 @@ with torch.no_grad():
     for i, (inputs, targets) in enumerate(test_loader):
         # if i == 10:
         #     break  # 只测试前10个batch的数据
-        outputs = model(inputs.view(inputs.size(0), -1))
+        outputs = model(inputs)
         _, predicted = torch.max(outputs.data, 1)
         total += targets.size(0)
         correct += (predicted == targets).sum().item()
