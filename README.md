@@ -30,26 +30,22 @@ python yolov8_pruning.py
 注意： 模型训练 ultralytics 版本一定和剪枝版本对应，目前测试版本 ultralytics==8.0.90.
 
 #### 2. Prune
+
 剪枝原理探索
 
 [点我](https://u1g62ufvk30.feishu.cn/docx/MVrfdvgZfo6cQ3xeSkEcBLcKnrf)
 
 Yolov8的通道剪枝方案(bn剪枝):
+
+---
+
 训练baseline --> 稀疏化训练 --> 剪枝 --> 微调 --> 部署
 
 步骤如下：
+
 1. 训练
-
 2. 稀疏化训练
-
-
 3. 剪枝
-
-
 4. 微调
-
-
 5. onnx
-
-
 6. engine
