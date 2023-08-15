@@ -44,8 +44,83 @@ Yolov8的通道剪枝方案(bn剪枝):
 步骤如下：
 
 1. 训练
+
+```
+from ultralytics import YOLO
+
+# Load a model
+# model = YOLO("yolov8n.yaml")  # build a new model from scratch
+model = YOLO("best.pt")  # load a pretrained model (recommended for training)
+
+# Use the model
+model.train(data="XX.yaml", epochs=100, batch=32, amp=False)  # train the model
+
+metrics = model.val()  # evaluate model performance on the validation set
+# results = model("https://ultralytics.com/images/bus.jpg")  # predict on an image
+
+```
+
 2. 稀疏化训练
+
+```
+# FILE: ultralytics/yolo/engine/trainer.py
+...
+# Backward
+self.scaler.scale(self.loss).backward()
+
+# <============ added
+l1_lambda = 1e-2 * (1 - 0.9 * epoch / self.epochs)
+for k, m in self.model.named_modules():
+    if isinstance(m, nn.BatchNorm2d):
+        m.weight.grad.data.add_(l1_lambda * torch.sign(m.weight.data))
+        m.bias.grad.data.add_(1e-2 * torch.sign(m.bias.data))
+
+# Optimize - https://pytorch.org/docs/master/notes/amp_examples.html
+if ni - last_opt_step >= self.accumulate:
+    self.optimizer_step()
+    last_opt_step = ni
+...
+```
+
 3. 剪枝
+
+```
+python prune.py  
+```
 4. 微调
+
+1. 去掉 l1 约束
+2. 避免从yaml 导入模型结构
+```
+# FILE: ultralytics/yolo/engine/model.py
+# self.trainer.model = self.trainer.get_model(weights=self.model if self.ckpt else None, cfg=self.model.yaml)
+# self.model = self.trainer.model
+self.trainer.model = self.model.train()
+```
+
 5. onnx
+
+```
+from ultralytics import YOLO
+import sys
+
+# Load a model
+model = YOLO("/home/DONG/PRUNE/ultralytics/runs/detect/train6/weights/best.pt")  # load a pretrained model (recommended for training)
+
+# success = model.export(format="onnx", opset=13, half=True)  # export the model to ONNX format
+success = model.export(format="onnx", simplify=True, opset=13, half=True) 
+print(success)
+
+```
 6. engine
+
+```
+trtexec --onnx=best.onnx  --saveEngine=best.engine --fp16
+
+```
+7. 部署
+
+  [链接](https://github.com/cvdong/YOLO_TRT_SIM)
+
+
+![]()
