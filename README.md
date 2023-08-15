@@ -127,12 +127,7 @@ trtexec --onnx=best.onnx  --saveEngine=best.engine --fp16
 剪枝比例：50%
 性能对比：tensorrt(3090)
 
------------------------------map50----map50-95----throughout
-yolov8s(fp16)----------------0.855------0.664------978.41qps
-yolov8s_prune(fp16)----------0.845------0.647------1142.82qps
-yolov8s_quant(int8)----------0.847------0.653------1323.24qps
-yolov8s_prune_quant(int8)----0.842------0.641------1441.46qps
-
+![](./images/test.png)
 完！
 ![](./images/dd.png)
 
