@@ -39,11 +39,11 @@ Yolov8的通道剪枝方案(bn剪枝):
 
 ---
 
-训练baseline --> 稀疏化训练 --> 剪枝 --> 微调 --> 部署
+训练baseline --> 稀疏化训练 --> 剪枝 --> 微调
 
 步骤如下：
 
-1. 训练
+#### (1) 训练
 
 ```
 from ultralytics import YOLO
@@ -60,7 +60,7 @@ metrics = model.val()  # evaluate model performance on the validation set
 
 ```
 
-2. 稀疏化训练
+#### (2) 稀疏化训练
 
 ```
 # FILE: ultralytics/yolo/engine/trainer.py
@@ -82,15 +82,17 @@ if ni - last_opt_step >= self.accumulate:
 ...
 ```
 
-3. 剪枝
+#### (3) 剪枝
 
 ```
 python prune.py  
 ```
-4. 微调
 
-1. 去掉 l1 约束
-2. 避免从yaml 导入模型结构
+#### (4) 微调
+
+* 去掉 l1 约束
+* 避免从yaml 导入模型结构
+
 ```
 # FILE: ultralytics/yolo/engine/model.py
 # self.trainer.model = self.trainer.get_model(weights=self.model if self.ckpt else None, cfg=self.model.yaml)
@@ -98,7 +100,7 @@ python prune.py
 self.trainer.model = self.model.train()
 ```
 
-5. onnx
+#### (5) onnx
 
 ```
 from ultralytics import YOLO
@@ -110,17 +112,27 @@ model = YOLO("/home/DONG/PRUNE/ultralytics/runs/detect/train6/weights/best.pt") 
 # success = model.export(format="onnx", opset=13, half=True)  # export the model to ONNX format
 success = model.export(format="onnx", simplify=True, opset=13, half=True) 
 print(success)
-
 ```
-6. engine
+
+#### (6) engine
 
 ```
 trtexec --onnx=best.onnx  --saveEngine=best.engine --fp16
-
 ```
-7. 部署
 
-  [链接](https://github.com/cvdong/YOLO_TRT_SIM)
+### 3. 部署
 
+[https://github.com/cvdong/YOLO_TRT_SIM](https://github.com/cvdong/YOLO_TRT_SIM)
 
-![]()
+剪枝比例：50%
+性能对比：tensorrt(3090)
+
+-----------------------------map50----map50-95----throughout
+yolov8s(fp16)----------------0.855------0.664------978.41qps
+yolov8s_prune(fp16)----------0.845------0.647------1142.82qps
+yolov8s_quant(int8)----------0.847------0.653------1323.24qps
+yolov8s_prune_quant(int8)----0.842------0.641------1441.46qps
+
+完！
+![](./images/dd.png)
+
